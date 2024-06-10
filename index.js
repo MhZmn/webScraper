@@ -1,19 +1,24 @@
+// importing and randomizing user agent for it to seems like a real person's browser
 const puppeteer = require("puppeteer-extra");
+const { executablePath } = require("puppeteer");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+const random_useragent = require("random-useragent");
 const fs = require("fs");
 puppeteer.use(StealthPlugin());
-const { executablePath } = require("puppeteer");
-const random_useragent = require("random-useragent");
+// defining the urls for the products and price
 const url_products = "https://drnutrition.com/en-om/products";
 const url_price = "https://www.tgju.org/profile/price_omr";
 
+// main function
 (async () => {
+    // defining global variables
     let browser;
     let omr_price;
     // scrape price
     try {
+        // defining the browser in scope and set the settings
         browser = await puppeteer.launch({
-            headless: true, // Run headless since this is just a price scrape
+            headless: true,
             defaultViewport: false,
             executablePath: executablePath(),
             args: [
@@ -31,10 +36,7 @@ const url_price = "https://www.tgju.org/profile/price_omr";
 
         omr_price = await page.evaluate(() => {
             function convertPriceOMR(inputStr) {
-                // Remove commas
                 let noCommasStr = inputStr.replace(/,/g, "");
-
-                // Remove the last digit
                 let resultStr = noCommasStr.slice(0, -1);
 
                 return resultStr;
@@ -43,7 +45,7 @@ const url_price = "https://www.tgju.org/profile/price_omr";
             return Number(
                 convertPriceOMR(
                     document.querySelector(
-                        "tbody.table-padding-lg > tr:nth-child(3) > td.text-left > span"
+                        "tbody.table-padding-lg > tr:nth-child(1) > td.text-left"
                     ).innerText
                 )
             );
@@ -73,11 +75,7 @@ const url_price = "https://www.tgju.org/profile/price_omr";
         await page.setUserAgent(random_useragent.getRandom());
         await page.goto(url_products, { waitUntil: "domcontentloaded" });
         await page.addStyleTag({ content: "{scroll-behavior: auto !important;}" });
-
-        // do it here
         await page.waitForSelector("div.new-filters > h4.section-title > span");
-
-        // Click on the span containing 'Availability'
         await page.evaluate(() => {
             const availabilitySpan = Array.from(
                 document.querySelectorAll("div.new-filters > h4.section-title > span")
@@ -97,6 +95,7 @@ const url_price = "https://www.tgju.org/profile/price_omr";
             "div.new-filters > ul > li:nth-child(2) > a[href='https://drnutrition.com/en-om/categories/In%20stock']"
         );
 
+        // defining the array of scraped products
         let products = [];
         while (true) {
             const handleProduct = await page.$$("[data-pid]");
