@@ -1,1 +1,1 @@
-# An advanced web scraper for drnutrition.com
+# A web scraper for drnutrition.com
