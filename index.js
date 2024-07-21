@@ -1,10 +1,14 @@
+<<<<<<< HEAD
 // importing and randomizing user agent for it to seems like a real person's browser
+=======
+>>>>>>> master
 const puppeteer = require("puppeteer-extra");
 const { executablePath } = require("puppeteer");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const random_useragent = require("random-useragent");
 const fs = require("fs");
 puppeteer.use(StealthPlugin());
+<<<<<<< HEAD
 // defining the urls for the products and price
 const url_products = "https://drnutrition.com/en-om/products";
 const url_price = "https://www.tgju.org/profile/price_omr";
@@ -17,6 +21,27 @@ const url_price = "https://www.tgju.org/profile/price_omr";
     // scrape price
     try {
         // defining the browser in scope and set the settings
+=======
+
+// Define the URLs for the products and price
+const url_products = "https://drnutrition.com/en-om/products";
+const url_price = "https://www.tgju.org/profile/price_omr";
+
+// Truncate the data.csv file if it exists
+fs.writeFile("data.csv", "", (error) => {
+    if (error) throw error;
+    console.log("data.csv file truncated");
+});
+
+// Main function
+(async () => {
+    // Define global variables
+    let browser;
+    let omr_price;
+    // Scrape price
+    try {
+        // Define the browser in scope and set the settings
+>>>>>>> master
         browser = await puppeteer.launch({
             headless: true,
             defaultViewport: false,
@@ -57,7 +82,11 @@ const url_price = "https://www.tgju.org/profile/price_omr";
     }
     console.log("OMR: ", omr_price, typeof omr_price);
 
+<<<<<<< HEAD
     // scrape products
+=======
+    // Scrape products
+>>>>>>> master
     try {
         browser = await puppeteer.launch({
             headless: true,
@@ -95,7 +124,16 @@ const url_price = "https://www.tgju.org/profile/price_omr";
             "div.new-filters > ul > li:nth-child(2) > a[href='https://drnutrition.com/en-om/categories/In%20stock']"
         );
 
+<<<<<<< HEAD
         // defining the array of scraped products
+=======
+        // Create a .csv file to write the scraped data to
+        fs.writeFile("data.csv", `title,flavor,serving,price\n`, (error) => {
+            if (error) throw error;
+        });
+
+        // Define the array of scraped products
+>>>>>>> master
         let products = [];
         while (true) {
             const handleProduct = await page.$$("[data-pid]");
@@ -148,6 +186,13 @@ const url_price = "https://www.tgju.org/profile/price_omr";
                 }
                 if (title !== "Null") {
                     products.push({ title, price, imgSrc });
+<<<<<<< HEAD
+=======
+
+                    fs.appendFile("data.csv", `${title}, ${price}\n`, (error) => {
+                        if (error) throw error;
+                    });
+>>>>>>> master
                 }
             }
 
